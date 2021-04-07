@@ -14,6 +14,16 @@ class Model_produk extends CI_Model{
         return $data;
     }
 
+    function filter_toko(){
+        $this->db->select('a.id,a.nama_usaha,a.nama_lengkap');
+        $this->db->from('store as a');
+        $query = $this->db->get();
+        foreach ($query->result_array() as $row):
+            $data[$row['id']] = $row['nama_usaha'].'-'.$row['nama_lengkap'];
+        endforeach;
+        return $data;
+    }
+
     function filter_kecamatan(){
         $this->db->select('a.no_kec,a.nama_kecamatan');
         $this->db->from('master_wilayah as a');
@@ -49,17 +59,17 @@ class Model_produk extends CI_Model{
 
     function list_data($pasar,$like,$limit,$offset)
     {
-        $this->db->select('a.*,b.nama_pasar');
-        $this->db->from('store AS a');
-        $this->db->join('pasar AS b', 'a.pasar_id = b.id', 'INNER');
+        $this->db->select('a.*,b.nama_usaha');
+        $this->db->from('produk AS a');
+        $this->db->join('store AS b', 'a.store_id = b.id', 'INNER');
         if($pasar) {
-            $this->db->where('a.pasar_id', $pasar);
+            $this->db->where('a.id_produk', $pasar);
         }
         if($like) {
-            $this->db->or_like('a.nama_usaha' ,$like);
+            $this->db->or_like('b.nama_usaha' ,$like);
         }
         // $this->db->group_by('a.umkm_id');
-        $this->db->order_by('a.nama_usaha','DESC');
+        $this->db->order_by('a.nama_produk','DESC');
         $this->db->limit($limit, $offset);
         $query = $this->db->get();
         return $query;
@@ -67,16 +77,16 @@ class Model_produk extends CI_Model{
 
     function list_total($pasar,$like)
     {
-        $this->db->select('a.*');
-        $this->db->from('store AS a');
-        $this->db->join('pasar AS b', 'a.pasar_id = b.id', 'INNER');
+        $this->db->select('*');
+        $this->db->from('produk AS a');
+        $this->db->join('store AS b', 'a.store_id = b.id', 'INNER');
         // $this->db->join('umkm_master_data AS c', 'a.umkm_id = c.ID', 'INNER');
         // $this->db->join('produk_images AS d', 'a.id_produk = d.produk_id', 'LEFT');
         if($pasar) {
-            $this->db->where('a.pasar_id', $pasar);
+            $this->db->where('a.id_produk', $pasar);
         }
         if($like) {
-            $this->db->or_like('a.nama_usaha' ,$like);
+            $this->db->or_like('b.nama_usaha' ,$like);
         }
         // $this->db->group_by('a.umkm_id');
         $query = $this->db->get();
@@ -84,19 +94,21 @@ class Model_produk extends CI_Model{
     }
 
     function tambah($data) {
-        $query = $this->db->insert('store', $data);
+        $query = $this->db->insert('produk', $data);
+        $insert_id = $this->db->insert_id();
+        // return $insert_id;
         if ($query) {
-            return true;
+            return $insert_id;
         }
         else {
-            return false;
+            return $insert_id;
         }
     }
 
     function detail($id) {
-        $this->db->select('*');
-        $this->db->from('store AS a');
-        $this->db->where('a.id', $id);
+        $this->db->select('a.*');
+        $this->db->from('produk AS a');
+        $this->db->where('a.id_produk', $id);
         $query = $this->db->get();
         return $query->row();
     }
@@ -110,8 +122,8 @@ class Model_produk extends CI_Model{
     }
 
     function update($data) {
-        $this->db->where('ID', $data['id']);
-        $query = $this->db->update('umkm_master_data', $data);
+        $this->db->where('id_produk', $data['id']);
+        $query = $this->db->update('store', $data);
         if ($query) {
             return true;
         }

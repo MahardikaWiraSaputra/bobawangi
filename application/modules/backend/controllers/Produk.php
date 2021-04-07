@@ -2,16 +2,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Produk extends CI_Controller {
-
     function __construct(){
         parent::__construct();
+        $last_id = '';
         $this->load->model('model_produk');
         $this->auth->cek_auth('data_produk');
     }
 
     public function index()
     {
-        $data = '';
+        $data['filter_pasar'] = $this->model_produk->filter_pasar();
         $this->load->view('produk/index', $data);
     }
 
@@ -20,16 +20,16 @@ class Produk extends CI_Controller {
         $offset = '0';
         $limit = 25;
         $like = array();
-        $status = '';
+        $pasar = '';
 
         if (isset($_POST['search_field']) && $_POST['search_field'] != NULL)
         {
             $like = $_POST['search_field'];
         }
 
-        if (isset($_POST['status']) && $_POST['status'] != NULL && $_POST['status'] != 'all')
+        if (isset($_POST['pasar']) && $_POST['pasar'] != NULL && $_POST['pasar'] != 'all')
         {
-            $status = $_POST['status'];
+            $pasar = $_POST['pasar'];
         }
 
         if (isset($_POST['page']) && $_POST['page'] != NULL) {
@@ -45,35 +45,41 @@ class Produk extends CI_Controller {
         $data['page'] = $page;
         $data['limit'] = $limit;
 
-        $data['total_items'] = $this->model_produk->list_total($status,$like)->num_rows();
-        $data['list_items'] = $this->model_produk->list_data($status,$like,$limit,$offset)->result();
+        $data['total_items'] = $this->model_produk->list_total($pasar,$like)->num_rows();
+        $data['list_items'] = $this->model_produk->list_data($pasar,$like,$limit,$offset)->result();
         
         $this->load->view('produk/v_list', $data );
     }
 
     // tambah
     public function tambah(){
-        $data = '';
+        $data['filter_toko'] = $this->model_produk->filter_toko();
         $this->load->view('produk/v_tambah', $data);
     }
 
     public function simpan() {
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('user_id', 'USER ID', 'trim|required');
-        $this->form_validation->set_rules('api_key', 'API_KEY', 'trim|required');
-        $this->form_validation->set_rules('password', 'PASSWORD', 'trim|required');
-        $this->form_validation->set_rules('url_domain', 'URL DOMAIN', 'trim|required');
+        $this->form_validation->set_rules('toko', 'TOKO', 'trim|required');
+        $this->form_validation->set_rules('nama_produk', 'nama_produk', 'trim|required');
+        $this->form_validation->set_rules('deskripsi', 'deskripsi', 'trim|required');
+        $this->form_validation->set_rules('stok', 'stok', 'trim|required');
+        $this->form_validation->set_rules('satuan', 'satuan', 'trim|required');
+        $this->form_validation->set_rules('harga', 'harga', 'trim|required');
         if($this->form_validation->run()) {
-            $data['user_id'] = $this->input->post('user_id');
-            $data['api_key'] = $this->input->post('api_key');
-            $data['password'] = md5($this->input->post('password'));
-            $data['url_domain'] = $this->input->post('url_domain');
-            $data['api_key_activated'] = $this->input->post('status');
-            $data['date_created'] = date('Y-m-d H:i:s');
-            $query = $this->model_produk->tambah($data);
+            $data['store_id'] = $this->input->post('toko');
+            $data['nama_produk'] = $this->input->post('nama_produk').' '.'1'.' '.$this->input->post('satuan');
+            $data['deskripsi'] = $this->input->post('deskripsi');
+            $data['stock'] = $this->input->post('stok');
+            $data['satuan'] = $this->input->post('satuan');
+            $data['harga'] = $this->input->post('harga');
+            $data['slug_produk'] = url_title($data['nama_produk']);
+            // $query = $this->model_produk->tambah($data);
+            $query = $this->db->insert('produk',$data);
+            $last_id = $this->db->insert_id();
             if ($query) {
                 $output['success'] = true;
                 $output['message'] = 'DATA BERHASIL DISIMPAN';
+                $output['last_id'] = $last_id;
             }
             else {
                 $output['success'] = false;
@@ -85,6 +91,50 @@ class Produk extends CI_Controller {
             $output['message'] = 'DATA GAGAL DISIMPAN';
         }
         echo json_encode($output);
+    }
+
+    public function multi_image()
+    {
+      $countfiles = count($_FILES['files']['name']);
+  
+      for($i=0;$i<$countfiles;$i++){
+        if(!empty($_FILES['files']['name'][$i])){
+            
+  
+          // Define new $_FILES array - $_FILES['file']
+          $_FILES['file']['name'] = $_FILES['files']['name'][$i];
+          $_FILES['file']['type'] = $_FILES['files']['type'][$i];
+          $_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+          $_FILES['file']['error'] = $_FILES['files']['error'][$i];
+          $_FILES['file']['size'] = $_FILES['files']['size'][$i];
+ 
+          // Set preference
+          $config['upload_path'] = './uploads/images/produk'; 
+          $config['allowed_types'] = 'jpg|jpeg|png|gif|PNG|JPEG|JPG';
+          $config['max_size'] = '50000'; // max_size in kb
+          $config['file_name'] = $_FILES['files']['name'][$i];
+  
+          //Load upload library
+          
+          $this->load->library('upload',$config); 
+          $this->upload->initialize($config);
+          $arr = array('msg' => 'something went wrong', 'success' => false);
+          // File upload
+          if($this->upload->do_upload('file')){
+           
+           $data = $this->upload->data();
+           $insert['produk_id'] = $this->input->post('produk_id');
+           $insert['url_image'] = base_url('uploads/images/produk/').$data['file_name'];
+           $this->db->insert('gambar_produk',$insert);
+        //    $get = $this->db->insert_id();
+           $arr = array('msg' => 'Image has been uploaded successfully', 'success' => true);
+ 
+          }
+        }
+  
+      }
+      echo json_encode($arr);
+  
     }
 
     // public function detail($id){
@@ -98,6 +148,7 @@ class Produk extends CI_Controller {
     // }
 
     public function edit($id){
+        $data['filter_toko'] = $this->model_produk->filter_toko();
         if ($id) {
             $data['detail'] = $this->model_produk->detail($id);
             $this->load->view('produk/v_edit', $data);
@@ -109,23 +160,27 @@ class Produk extends CI_Controller {
 
     public function update() {
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('id', 'ID', 'trim|required');
-        $this->form_validation->set_rules('user_id', 'USER ID', 'trim|required');
-        $this->form_validation->set_rules('api_key', 'API_KEY', 'trim|required');
-        $this->form_validation->set_rules('url_domain', 'URL DOMAIN', 'trim|required');
+        $this->form_validation->set_rules('toko', 'TOKO', 'trim|required');
+        $this->form_validation->set_rules('nama_produk', 'nama_produk', 'trim|required');
+        $this->form_validation->set_rules('deskripsi', 'deskripsi', 'trim|required');
+        $this->form_validation->set_rules('stok', 'stok', 'trim|required');
+        $this->form_validation->set_rules('satuan', 'satuan', 'trim|required');
+        $this->form_validation->set_rules('harga', 'harga', 'trim|required');
         if($this->form_validation->run()) {
-            $data['id'] = $this->input->post('id');
-            $data['user_id'] = $this->input->post('user_id');
-            $data['api_key'] = $this->input->post('api_key');
-            $data['url_domain'] = $this->input->post('url_domain');
-            $data['api_key_activated'] = $this->input->post('status');
-            if ($this->input->post('password')) {
-                $data['password'] = md5($this->input->post('password'));
-            }
-            $query = $this->model_produk->update($data);
+            $data['store_id'] = $this->input->post('toko');
+            $data['nama_produk'] = $this->input->post('nama_produk').' '.'1'.' '.$this->input->post('satuan');
+            $data['deskripsi'] = $this->input->post('deskripsi');
+            $data['stock'] = $this->input->post('stok');
+            $data['satuan'] = $this->input->post('satuan');
+            $data['harga'] = $this->input->post('harga');
+            $data['slug_produk'] = url_title($data['nama_produk']);
+            // $query = $this->model_produk->tambah($data);
+            $query = $this->db->insert('produk',$data);
+            $last_id = $this->db->insert_id();
             if ($query) {
                 $output['success'] = true;
                 $output['message'] = 'DATA BERHASIL DISIMPAN';
+                $output['last_id'] = $last_id;
             }
             else {
                 $output['success'] = false;
@@ -138,7 +193,6 @@ class Produk extends CI_Controller {
         }
         echo json_encode($output);
     }
-
 
     public function delete($id){
         if($id) {         
