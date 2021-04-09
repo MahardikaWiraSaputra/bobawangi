@@ -1,7 +1,29 @@
 <?php if ( ! defined( 'BASEPATH')) exit( 'No direct script access allowed');?>
-<div class="row">
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Register Toko</a>
+    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Register User Toko</a>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+  <div class="row">
 	<div class="col-md-12">
 		<form id="form_toko" class="form-horizontal">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php echo form_label('Toko', 'Nama Toko', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<select name="kategori_store" id="kategori_store" class="form-control">
+								<option value="">Pilih Kategori Toko</option>
+								<option value="1">Pasar</option>
+								<option value="2">Umkm</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
@@ -128,10 +150,77 @@
 			</div>
 		</form>
 	</div>
+	</div>
+  </div>
+  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+  <div class="row">
+	<div class="col-md-12">
+		<form id="form_user" class="form-horizontal">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php echo form_label('NIK', 'nik', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'nik', 'id' => 'nik', 'class' => 'form-control input-sm', 'placeholder' => 'Masukkan NIK','onchange="get_nik()"']); ?>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php echo form_label('username', 'username', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'username', 'id' => 'username', 'class' => 'form-control input-sm', 'placeholder' => 'Masukkan username']); ?>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">	
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php echo form_label('email', 'email', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'email', 'id' => 'email', 'class' => 'form-control input-sm', 'placeholder' => 'Masukkan email']); ?>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php echo form_label('Pasword', 'password', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'password', 'id' => 'password', 'class' => 'form-control input-sm', 'placeholder' => 'Password']); ?>	
+						</div>
+					</div>	
+				</div>	
+			</div>
+			<div class="form-group btn-simpan">
+				<?php echo form_label('', '', array('class' => 'col-md-2 control-label-left')); ?>
+				<div class="col-md-2">
+					<a class="btn btn-success btn-block" onclick="simpan_user();">SIMPAN</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	</div>
+  </div>
+  </div>
 </div>
 
 
+
 <script>
+
+	$(document).ready(function() {
+        $("#kecamatan").change(function() {
+			var id = this.value;
+			$.ajax({
+				type: "GET",
+				url  : "<?php echo base_url()?>backend/toko/get_desa/"+id,
+				success: function(response){
+					$('#desa').html(response);
+				}
+			});
+    	});
+	})
 
 	function reset_val() {
 		$("#form_api_key")[0].reset();
@@ -165,6 +254,90 @@
             type: "POST",
             url  : "<?php echo base_url()?>backend/toko/simpan",
             data: $("#form_toko").serializeArray(),
+            dataType: "JSON",
+            success: function(response){
+                if(response.success == true) {
+                    swal({
+				      	title: 'Sukses',
+				      	text: response.message,
+				      	type: 'success',
+				      	padding: '2em',
+				      	showConfirmButton: false, 
+				      	timer: 1500
+				    }).then((result) => {
+					    if (result.dismiss === Swal.DismissReason.timer) {
+					       	$('#ajax-modal').modal('hide');
+					       	get_items();          
+					    }
+					});
+                }
+                else {
+                    swal({
+				    	title: 'Gagal',
+				    	text: response.message,
+				    	type: 'error',
+				    	padding: '2em',
+				    	showConfirmButton: false, 
+				    	timer: 1500
+				    }).then((result) => {
+					    if (result.dismiss === Swal.DismissReason.timer) {
+					    	$('#ajax-modal').modal('hide');
+					    }
+					});
+                }
+            }
+        });
+        return false;
+	}
+
+	function get_nik(){
+		console.log('data');
+	}
+
+	function get_nik(){
+        $.ajax({
+            type: "POST",
+            url  : "<?php echo base_url()?>backend/toko/cek_nik",
+            data: $("#form_toko").serializeArray(),
+            dataType: "JSON",
+            success: function(response){
+                if(response.success == true) {
+                    swal({
+				      	title: 'Sukses',
+				      	text: response.message,
+				      	type: 'success',
+				      	padding: '2em',
+				      	showConfirmButton: false, 
+				      	timer: 1500
+				    }).then((result) => {
+					    if (result.dismiss === Swal.DismissReason.timer) {
+					       	          
+					    }
+					});
+                }
+                else {
+                    swal({
+				    	title: 'Gagal',
+				    	text: response.message,
+				    	type: 'error',
+				    	padding: '2em',
+				    	showConfirmButton: false, 
+				    	timer: 1500
+				    }).then((result) => {
+					    if (result.dismiss === Swal.DismissReason.timer) {
+					    }
+					});
+                }
+            }
+        });
+        return false;
+	}
+
+	function simpan_user(){
+        $.ajax({
+            type: "POST",
+            url  : "<?php echo base_url()?>backend/toko/simpan_user",
+            data: $("#form_user").serializeArray(),
             dataType: "JSON",
             success: function(response){
                 if(response.success == true) {

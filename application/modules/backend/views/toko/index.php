@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-lg-8 grid-margin">
         <div class="d-lg-flex align-items-baseline">
-            <h5 class="text-dark mb-0">DATA TOKO PASAR</h5>
+            <h5 class="text-dark mb-0">DATA PEDAGANG</h5>
         </div>
     </div>
     <div class="col-lg-4 text-lg-right grid-margin">
@@ -78,6 +78,8 @@
 	}
 
 	function tambah(){
+		var title = 'Tambah Data Pedagang';
+		$('.modal-title').html(title);
   		ajax_modal('backend/toko/tambah');
 	}
 </script>

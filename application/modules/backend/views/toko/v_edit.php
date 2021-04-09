@@ -5,6 +5,28 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
+						<?php echo form_label('Toko', 'Nama Toko', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<select name="kategori_store" id="kategori_store" class="form-control">
+								<option value="">Pilih Kategori Toko</option>
+								<?php if($detail->kategori_store == 1):?>
+									<option value="1" selected>Pasar</option>
+									<option value="2">Umkm</option>
+								<?php elseif($detail->kategori_store == 2):?>
+									<option value="1">Pasar</option>
+									<option value="2" selected>Umkm</option>
+								<?php else:?>
+									<option value="1">Pasar</option>
+									<option value="2">Umkm</option>
+								<?php endif;?>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
 						<?php echo form_label('NIK', 'nik', array('class' => 'col-md-4 control-label-left')); ?>
 						<div class="col-md-8">
 							<?php echo form_hidden('id', $detail->id); ?>
@@ -68,7 +90,16 @@
 					<div class="form-group">
 						<?php echo form_label('DESA', 'desa', array('class' => 'col-md-4 control-label-left')); ?>
 						<div class="col-md-12">
-							<?php echo form_dropdown('desa', $filter_desa, $detail->desa, 'id="desa", class="form-control select2"'); ?>
+							<select name="desa" id="desa" class="form-control select2">
+								<option value="">Pilih Desa</option>
+								<?php foreach($filter_desa as $data):?>
+								<?php if($data['kode_desa'] == $detail->desa):?>
+									<option value="<?=$data['kode_desa']?>" selected><?=$data['nama_desa']?></option>
+									<?php else:?>
+									<option value="<?=$data['kode_desa']?>"><?=$data['nama_desa']?></option>
+								<?php endif;?>
+								<?php endforeach;?>
+							</select>
 						</div>
 					</div>	
 				</div>	

@@ -24,16 +24,16 @@
               <?php echo $row->nama_produk; ?>
             </td>
             <td class="">
-              <?php if($row->status_stok == '1'): ?><button type="button" class="btn btn-outline-success btn-sm btn-stok">tersedia</button> <?php else: ?><button type="button" class="btn btn-outline-secondary btn-sm btn-stok">habis</button><?php endif; ?>
+              <?php if($row->stock > '1'): ?><button type="button" class="btn btn-outline-success btn-sm btn-stok">tersedia</button> <?php else: ?><button type="button" class="btn btn-outline-secondary btn-sm btn-stok">habis</button><?php endif; ?>
             </td>
             <td class="">
-              Rp. <?php echo number_format($row->harga_produk,0,',','.'); ?>
+              Rp. <?php echo number_format($row->harga,0,',','.').' / '.$row->satuan; ?>
             </td>
             <td class="">
-              <?php echo $row->NAMA_USAHA; ?>
+              <?php echo $row->nama_usaha; ?>
             </td>
             <td class="">
-              <?php echo $row->view; ?> dilihat
+              <!-- <?php echo $row->view; ?> dilihat -->
             </td>
             <td>
               <div class="btn-group">
@@ -48,10 +48,15 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-12">
-    <div id="show_paginator" align="center"></div>
-  </div>
+<div class="row mt-5">
+  <div class="col-xl-12 col-lg-12 col-sm-12">
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-sm btn-outline-info"><span class="btn-label"></span> <b>JUMLAH DATA <?php echo $total_items; ?> </b></button>
+            <div class="paginating-container pagination-default">
+                <div id="show_paginator" align="center"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -69,7 +74,7 @@
 	});
 
     function edit(id){
-        ajax_modal('backend/api_key/edit/'+id);
+        ajax_modal('backend/produk/edit/'+id);
     }
 
     function hapus(id) {

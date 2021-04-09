@@ -59,7 +59,6 @@
                             </div>
                         </a>
                     </li>
-
                     <li class="nav-item" id="mn" onclick="load('backend/main/dashboard','#contents'); switch_menu(this);">
                         <a class="nav-link" href="javascript:void(0)"> <i class="mdi mdi-book-open menu-icon"></i>
                             <span class="menu-title">DASHBOARD</span>
@@ -81,15 +80,15 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item" id="mn" onclick="load('backend/produk','#contents'); switch_menu(this);"> 
+                    <li class="nav-item" id="mn" onclick="load('backend/toko','#contents'); switch_menu(this);"> 
                         <a class="nav-link" href="javascript:void(0)"> <i class="mdi mdi-view-headline menu-icon"></i>
-                            <span class="menu-title">DATA PRODUK</span>
+                            <span class="menu-title">DATA PEDAGANG</span>
                             <i class="menu-arrow"></i>
                         </a>
                     </li>
-                    <li class="nav-item" id="mn" onclick="load('backend/toko','#contents'); switch_menu(this);"> 
+                    <li class="nav-item" id="mn" onclick="load('backend/produk','#contents'); switch_menu(this);"> 
                         <a class="nav-link" href="javascript:void(0)"> <i class="mdi mdi-view-headline menu-icon"></i>
-                            <span class="menu-title">DATA PASAR</span>
+                            <span class="menu-title">DATA PRODUK</span>
                             <i class="menu-arrow"></i>
                         </a>
                     </li>
@@ -103,7 +102,7 @@
                                <li class="nav-item" id="mn" onclick="load('backend/users','#contents'); switch_menu(this);"> 
                                     <a class="nav-link" href="javascript:void(0)">Pengguna</a>
                                 </li>
-<!--                                 <li class="nav-item" id="mn" onclick="load('backend/main/dashboard','#contents'); switch_menu(this);"> 
+                                <!--<li class="nav-item" id="mn" onclick="load('backend/main/dashboard','#contents'); switch_menu(this);"> 
                                     <a class="nav-link" href="javascript:void(0)">Group Pengguna</a>
                                 </li> -->
                                 <li class="nav-item" id="mn" onclick="load('backend/group_permissions','#contents'); switch_menu(this);"> 
@@ -112,17 +111,16 @@
                             </ul>
                         </div>
                     </li>
-
                 </ul>
             </nav>
             <div class="main-panel">
                 <div class="content-wrapper">
                     <?php $this->load->view($page);?>
-
                     <div class="modal fade" id="ajax-modal" role="dialog">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
+                                    <h5 class="modal-title"></h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -132,8 +130,6 @@
                             </div>
                         </div>
                     </div>
-
-                    
                 </div>
                 <footer class="footer">
                     <div class="d-sm-flex justify-content-center justify-content-sm-between"> 

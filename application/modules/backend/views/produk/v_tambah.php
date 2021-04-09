@@ -1,69 +1,92 @@
 <?php if ( ! defined( 'BASEPATH')) exit( 'No direct script access allowed');?>
+<style type="text/css">
+.thumb{
+  margin: 24px 5px 20px 0;
+  width: 150px;
+  float: left;
+}
+#blah {
+  border: 2px solid;
+  display: block;
+  background-color: white;
+  border-radius: 5px;
+}
+</style>
 <div class="row">
 	<div class="col-md-12">
-		<form id="form_api_key" class="form-horizontal">
+		<form id="form_produk" class="form-horizontal" enctype="multipart/form-data">
 			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
-						<?php echo form_label('User Apps', 'user_id', array('class' => 'col-md-4 control-label-left')); ?>
-						<div class="col-md-8">
-							<?php echo form_input(['name' => 'user_id', 'id' => 'user_id', 'class' => 'form-control input-sm', 'placeholder' => 'User Apps','onchange'=>'generate_key()']); ?>
+						<?php echo form_label('Toko', 'Nama Toko', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_dropdown('toko', $filter_toko, '', 'id="toko", class="form-control select2", style="width:100%"'); ?>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php echo form_label('Nama Produk', 'nama_produk', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'nama_produk', 'id' => 'nama_produk', 'class' => 'form-control input-sm', 'placeholder' => 'nama produk']); ?>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="form-group">
-						<?php echo form_label('Api Key', 'api_key', array('class' => 'col-md-4 control-label-left')); ?>
-						<div class="col-md-8">
-							<?php echo form_input(['name' => 'api_key', 'id' => 'api_key', 'class' => 'form-control input-sm', 'placeholder' => 'Api Key']); ?>	
+						<?php echo form_label('Deskripsi', 'deskripsi', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'deskripsi', 'id' => 'deskripsi', 'class' => 'form-control input-sm', 'placeholder' => 'deskripsi']); ?>	
 						</div>
 					</div>	
 				</div>	
 			</div>
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-3">
 					<div class="form-group">
-						<?php echo form_label('Domain URL', 'url_domain', array('class' => 'col-md-4 control-label-left')); ?>
-						<div class="col-md-8">
-							<?php echo form_input(['name' => 'url_domain', 'id' => 'url_domain', 'class' => 'form-control input-sm', 'placeholder' => 'Domain URL']); ?>
+						<?php echo form_label('Stok', 'stok', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'stok', 'id' => 'stok', 'class' => 'form-control input-sm', 'placeholder' => 'Stok']); ?>
 						</div>
 					</div>	
 				</div>	
-				<div class="col-md-6">
+				<div class="col-md-3">
 					<div class="form-group">
-						<?php echo form_label('Password', 'password', array('class' => 'col-md-4 control-label-left')); ?>
-						<div class="col-md-8">
-							<?php echo form_input(['name' => 'password', 'id' => 'password', 'class' => 'form-control input-sm', 'placeholder' => 'Password']); ?>
-							<?php echo form_hidden('unor'); ?>
+						<?php echo form_label('Satuan', 'satuan', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'satuan', 'id' => 'satuan', 'class' => 'form-control input-sm', 'placeholder' => 'satuan']); ?>
+						</div>
+					</div>	
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<?php echo form_label('Harga', 'harga', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<?php echo form_input(['name' => 'harga', 'id' => 'harga', 'class' => 'form-control input-sm', 'placeholder' => 'harga']); ?>
 						</div>
 					</div>	
 				</div>	
 			</div>
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-12">
 					<div class="form-group">
-						<?php echo form_label('Status', 'status', array('class' => 'col-md-4 control-label-left')); ?>
-						<div class="col-md-8">
-							<div class="row">
-								<div class="col-md-4">
-									<div class="radio">
-										<?php echo form_radio('status', 'yes', TRUE); ?> Aktif
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="radio">
-										<?php echo form_radio('status', 'no', FALSE); ?> Nonaktif
-									</div>								
-								</div>
-							</div>
+						<?php echo form_label('Gambar', 'Gambar', array('class' => 'col-md-4 control-label-left')); ?>
+						<div class="col-md-12">
+							<input type="file" id="image_file" multiple="multiple" />
+							<input type="hidden" id="produk_id" name="produk_id">
 						</div>
+						<div id="uploadPreview"></div>
 					</div>	
 				</div>	
 			</div>
+
 			<div class="form-group btn-simpan">
 				<?php echo form_label('', '', array('class' => 'col-md-2 control-label-left')); ?>
 				<div class="col-md-2">
 					<a class="btn btn-success btn-block" onclick="simpan();">Simpan</a>
+					<!-- <button type="submit">submit</button> -->
 				</div>
 			</div>
 		</form>
@@ -72,7 +95,10 @@
 
 
 <script>
-
+	$(document).ready(function() {
+        $(".select2").select2();
+		
+    });
 	function reset_val() {
 		$("#form_api_key")[0].reset();
 	}
@@ -103,11 +129,14 @@
 	function simpan(){
         $.ajax({
             type: "POST",
-            url  : "<?php echo base_url()?>backend/api_key/simpan",
-            data: $("#form_api_key").serializeArray(),
+            url  : "<?php echo base_url()?>backend/produk/simpan",
+            data: $("#form_produk").serializeArray(),
             dataType: "JSON",
             success: function(response){
+				$('#produk_id').val(response.last_id);
                 if(response.success == true) {
+					console.log(response.last_id);
+					upload()
                     swal({
 				      	title: 'Sukses',
 				      	text: response.message,
@@ -140,4 +169,75 @@
         });
         return false;
 	}
+
+	function upload()
+	{
+		let myForm = document.getElementById('form_produk');
+		if ($('#image_file').val() == '') {
+                alert("Please Select the File");
+            } else {
+                var form_data = new FormData(myForm);
+                var ins = document.getElementById('image_file').files.length;
+                for (var x = 0; x < ins; x++) {
+                    form_data.append("files[]", document.getElementById('image_file').files[x]);
+                }
+				console.log(form_data);
+                $.ajax({
+                    url: "<?php echo base_url()?>backend/produk/multi_image",
+                    method: "POST",
+                    data: form_data,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function(res) {
+                        console.log(res.success);
+                        if (res.success == true) {
+                            $('#image_file').val('');
+                            $('#uploadPreview').html('');
+                            $('#msg').html(res.msg);
+                            $('#divMsg').show();
+                        } else if (res.success == false) {
+                            $('#msg').html(res.msg);
+                            $('#divMsg').show();
+                        }
+                        setTimeout(function() {
+                            $('#msg').html('');
+                            $('#divMsg').hide();
+                        }, 3000);
+                    }
+                });
+        }
+	}
+
+	function readImage(file) {
+		var reader = new FileReader();
+		var image = new Image();
+		reader.readAsDataURL(file);
+		reader.onload = function(_file) {
+			image.src = _file.target.result; // url.createObjectURL(file);
+			image.onload = function() {
+				var w = this.width,
+					h = this.height,
+					t = file.type, // ext only: // file.type.split('/')[1],
+					n = file.name,
+					s = ~~(file.size / 1024) + 'KB';
+				$('#uploadPreview').append('<img src="' + this.src + '" class="thumb">');
+			};
+			image.onerror = function() {
+				alert('Invalid file type: ' + file.type);
+			};
+		};
+	}
+	$("#image_file").change(function(e) {
+		if (this.disabled) {
+			return alert('File upload not supported!');
+		}
+		var F = this.files;
+		if (F && F[0]) {
+			for (var i = 0; i < F.length; i++) {
+				readImage(F[i]);
+			}
+		}
+	}); 
 </script>

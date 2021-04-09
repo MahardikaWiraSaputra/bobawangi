@@ -151,11 +151,30 @@ class Produk extends CI_Controller {
         $data['filter_toko'] = $this->model_produk->filter_toko();
         if ($id) {
             $data['detail'] = $this->model_produk->detail($id);
+            $data['foto'] = $this->model_produk->foto($id);
             $this->load->view('produk/v_edit', $data);
         }
         else {
             echo 'id tidak boleh kosong';
         }
+    }
+
+    public function hapus_foto(){
+        $foto = $this->input->post('foto');
+        $local = "https://localhost/".base_url();
+        $parse = str_replace("https://localhost/bobawangi_fix/","",$foto);
+        $data_foto = array('url_image'=>$foto);
+        $hapus_foto = $this->model_produk->hapus_foto($data_foto);
+        // var_dump($parse); die;
+        if(unlink($parse))  
+        {  
+            $output['success'] = true;
+            $output['message'] = 'DATA BERHASIL DISIMPAN';  
+        } else {
+            $output['success'] = false;
+            $output['message'] = 'DATA GAGAL DISIMPAN';
+        }
+        echo json_encode($output);
     }
 
     public function update() {
@@ -167,6 +186,7 @@ class Produk extends CI_Controller {
         $this->form_validation->set_rules('satuan', 'satuan', 'trim|required');
         $this->form_validation->set_rules('harga', 'harga', 'trim|required');
         if($this->form_validation->run()) {
+            $data['id_produk'] = $this->input->post('produk_id');
             $data['store_id'] = $this->input->post('toko');
             $data['nama_produk'] = $this->input->post('nama_produk').' '.'1'.' '.$this->input->post('satuan');
             $data['deskripsi'] = $this->input->post('deskripsi');
@@ -174,13 +194,10 @@ class Produk extends CI_Controller {
             $data['satuan'] = $this->input->post('satuan');
             $data['harga'] = $this->input->post('harga');
             $data['slug_produk'] = url_title($data['nama_produk']);
-            // $query = $this->model_produk->tambah($data);
-            $query = $this->db->insert('produk',$data);
-            $last_id = $this->db->insert_id();
+            $query = $this->model_produk->update($data);
             if ($query) {
                 $output['success'] = true;
                 $output['message'] = 'DATA BERHASIL DISIMPAN';
-                $output['last_id'] = $last_id;
             }
             else {
                 $output['success'] = false;

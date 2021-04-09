@@ -66,7 +66,7 @@ class Model_produk extends CI_Model{
             $this->db->where('a.id_produk', $pasar);
         }
         if($like) {
-            $this->db->or_like('b.nama_usaha' ,$like);
+            $this->db->or_like('a.nama_produk' ,$like);
         }
         // $this->db->group_by('a.umkm_id');
         $this->db->order_by('a.nama_produk','DESC');
@@ -113,6 +113,19 @@ class Model_produk extends CI_Model{
         return $query->row();
     }
 
+    function foto($id) {
+        $this->db->select('a.*');
+        $this->db->from('gambar_produk AS a');
+        $this->db->where('a.produk_id', $id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function hapus_foto($data){
+        $this->db->where('url_image',$data['url_image']);
+        $this->db->delete('gambar_produk');
+    }
+
     function get_desa($id) {
         $this->db->select('a.kode_desa,a.nama_desa');
         $this->db->from('master_wilayah AS a');
@@ -122,8 +135,8 @@ class Model_produk extends CI_Model{
     }
 
     function update($data) {
-        $this->db->where('id_produk', $data['id']);
-        $query = $this->db->update('store', $data);
+        $this->db->where('id_produk', $data['id_produk']);
+        $query = $this->db->update('produk', $data);
         if ($query) {
             return true;
         }

@@ -7,6 +7,7 @@
           <tr>
             <th class="text-center" width="50">NO</th>
             <th>NAMA TOKO</th>
+            <th>KATEGORI TOKO</th>
             <th>PEMILIK</th>
             <!-- <th width="120" class="text-center">STOK</th>-->
             <!-- <th width="140">HARGA</th> -->
@@ -23,6 +24,9 @@
             </td>
             <td class="">
               <?php echo $row->nama_usaha; ?>
+            </td>
+            <td class="">
+            <?php echo ($row->kategori_store == '1' ? 'UMKM' : 'PASAR');?>
             </td>
             <td class="">
               <?php echo $row->nama_lengkap; ?><br>
@@ -60,12 +64,16 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-12">
-    <div id="show_paginator" align="center"></div>
-  </div>
+<div class="row mt-5">
+  <div class="col-xl-12 col-lg-12 col-sm-12">
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-sm btn-outline-info"><span class="btn-label"></span> <b>JUMLAH DATA <?php echo $total_items; ?> </b></button>
+            <div class="paginating-container pagination-default">
+                <div id="show_paginator" align="center"></div>
+            </div>
+        </div>
+    </div>
 </div>
-
 
 
 <?php $total_page = ( $total_items / $limit)+1; if ($total_page < 1){ $total_page='1' ; } ?>
@@ -81,6 +89,8 @@
 	});
 
     function edit(id){
+        var title = 'Perbarui Data Toko';
+		    $('.modal-title').html(title);
         ajax_modal('backend/toko/edit/'+id);
     }
 

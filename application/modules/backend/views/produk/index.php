@@ -23,7 +23,7 @@
 							<div class="form-group row">
 								<label class="col-sm-3 col-form-label">Status</label>
 								<div class="col-sm-9">
-									<?php echo form_dropdown( 'status', array('all'=>'Semua','yes'=>'Aktif', 'no'=>'Nonaktif'), 'all', 'id="status" class="form-control select2" onchange="get_items()"')?>
+									<?php echo form_dropdown('pasar', $filter_pasar, 'all', 'id="pasar", class="form-control select2", style="width:100%", onchange="get_items()"'); ?>
 								</div>
 							</div>
 						</div>
@@ -32,7 +32,7 @@
 								<label class="col-sm-3 col-form-label">Search</label>
 								<div class="col-sm-9">
 									<div class="input-group">
-										<input type="text" name="search" value="" id="search" class="form-control" placeholder="Nama User">
+										<input type="text" name="search" value="" onchange="get_items()" id="search" class="form-control" placeholder="Nama User">
 										<div class="input-group-append">
 											<button class="btn btn-sm btn-facebook" type="button"> <i class="mdi mdi-magnify"></i>
 											</button>
@@ -71,7 +71,7 @@
 
 	    $.post(site+'backend/produk/list_data', {
 	        search_field: $('#search').val(),
-	        status: $('#status').val(),
+	        pasar: $('#pasar').val(),
 	        page: page
 	        }, function(data) {
 	        $("#content_items").html(data);
@@ -79,6 +79,8 @@
 	}
 
 	function tambah(){
-  		ajax_modal('backend/umkm/tambah');
+		var title = 'Tambah Data Produk';
+		$('.modal-title').html(title);
+  		ajax_modal('backend/produk/tambah');
 	}
 </script>
